@@ -23,21 +23,19 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
 
   // State variables
   uint256 private immutable i_entranceFee;
-
-  VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
-
   bytes32 private immutable i_gasLane;
   uint64 private immutable i_subscriptionId;
   uint32 private immutable i_callbackGasLimit;
   uint16 private constant REQUEST_CONFIRMATIONS = 3;
   uint32 private constant NUM_WORDS = 1;
+  VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
 
   // Lottery Variables
   address payable[] private s_players;
   address private s_recentWinner;
-  RaffleState private s_raffleState;
   uint256 private s_lastTimeStamp;
   uint256 private immutable i_interval;
+  RaffleState private s_raffleState;
 
   // Events
   event RaffleEnter(address indexed player);
@@ -88,7 +86,7 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
    * 4. Implicity, your subscription is funded with LINK.
    */
   function checkUpkeep(
-    bytes calldata /* checkData */
+    bytes memory /* checkData */
   )
     public
     override
@@ -161,5 +159,25 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
 
   function getRecentWinner() public view returns (address) {
     return s_recentWinner;
+  }
+
+  function getRaffleState() public view returns (RaffleState) {
+    return s_raffleState;
+  }
+
+  function getNumWords() public pure returns (uint256) {
+    return NUM_WORDS;
+  }
+
+  function getNumberOfPlayers() public view returns (uint256) {
+    return s_players.length;
+  }
+
+  function getLastTimeStamp() public view returns (uint256) {
+    return s_lastTimeStamp;
+  }
+
+  function getRequestConfirmations() public pure returns (uint256) {
+    return REQUEST_CONFIRMATIONS;
   }
 }
